@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lowongan Kerja CRUD</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h2>Lowongan Kerja</h2>
+
+      <!-- Form untuk Tambah / Update Lowongan -->
+      <form id="jobForm" class="mb-4">
+        <div class="form-group">
+          <label for="jobId">ID:</label>
+          <input type="text" class="form-control" id="jobId" />
+        </div>
+        <div class="form-group">
+          <label for="jobPosisi">Posisi:</label>
+          <input type="text" class="form-control" id="jobPosisi" required />
+        </div>
+        <div class="form-group">
+          <label for="jobPerusahaan">Perusahaan:</label>
+          <input type="text" class="form-control" id="jobPerusahaan" required />
+        </div>
+        <div class="form-group">
+          <label for="jobLokasi">Lokasi:</label>
+          <input type="text" class="form-control" id="jobLokasi" required />
+        </div>
+        <div class="form-group">
+          <label for="jobDeskripsi">Deskripsi:</label>
+          <textarea class="form-control" id="jobDeskripsi" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="jobGaji">Gaji:</label>
+          <input type="text" class="form-control" id="jobGaji" required />
+        </div>
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          Tambah Lowongan
+        </button>
+      </form>
+
+      <!-- Tabel untuk Menampilkan Lowongan -->
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Posisi</th>
+            <th>Perusahaan</th>
+            <th>Lokasi</th>
+            <th>Deskripsi</th>
+            <th>Gaji</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="jobTableBody">
+          <!-- Baris lowongan akan ditambahkan di sini -->
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        const script_url =
+          "https://script.google.com/macros/s/AKfycbyCmiwAkdyESfDHoZLO1-CmmAwXByV9a2Qee1fH2zX9YouF1iPmAbkRIm54lpD9d0FEAA/exec"; // Ganti dengan URL endpoint server
+
+        // Fungsi untuk memuat data lowongan
+        function loadJobs() {
+          $.ajax({
+            url: script_url,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+              const tbody = $("#jobTableBody");
+              tbody.empty(); // Kosongkan tabel
+              response.forEach((job) => {
+                tbody.append(`
+                  <tr>
+                    <td>${job.id}</td>
+                    <td>${job.posisi}</td>
+                    <td>${job.perusahaan}</td>
+                    <td>${job.lokasi}</td>
+                    <td>${job.deskripsi}</td>
+                    <td>${job.gaji}</td>
+                    <td>
+                      <button class="btn btn-warning btn-sm" onclick="editJob(${job.id})">Edit</button>
+                      <button class="btn btn-danger btn-sm" onclick="deleteJob(${job.id})">Delete</button>
+                    </td>
+                  </tr>
+                `);
+              });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              console.error("Request failed: ", textStatus, errorThrown);
+            },
+          });
+        }
+
+        // Memuat data lowongan ketika halaman dimuat
+        loadJobs();
+
+        // Fungsi untuk menambahkan lowongan baru atau memperbarui
+        $("#jobForm").on("submit", function (event) {
+          event.preventDefault();
+
+          const jobId = $("#jobId").val();
+          const posisi = $("#jobPosisi").val();
+          const perusahaan = $("#jobPerusahaan").val();
+          const lokasi = $("#jobLokasi").val();
+          const deskripsi = $("#jobDeskripsi").val();
+          const gaji = $("#jobGaji").val();
+
+          function manageJob(jobId) {
+            let action = jobId ? "update" : "create";
+
+            if (action === "update") {
+              console.log("Memperbarui pekerjaan dengan ID:", jobId);
+              // Logika untuk memperbarui pekerjaan
+            } else {
+              console.log("Membuat pekerjaan baru.");
+              // Logika untuk membuat pekerjaan baru
+            }
+          }
+
+          $.ajax({
+            url: script_url,
+            type: "POST",
+            dataType: "json",
+            data: {
+              id: jobId,
+              posisi: posisi,
+              perusahaan: perusahaan,
+              lokasi: lokasi,
+              tanggal_terbit: tanggal_terbit,
+              deskripsi: deskripsi,
+              gaji: gaji,
+              action: action,
+            },
+            success: function (response) {
+              alert(response.message);
+              loadJobs(); // Muat ulang data setelah submit
+              $("#jobForm")[0].reset(); // Reset form
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              console.error("Request failed: ", textStatus, errorThrown);
+            },
+          });
+        });
+
+        // Fungsi untuk mengedit lowongan
+        window.editJob = function (jobId) {
+          $.ajax({
+            url: script_url,
+            type: "GET",
+            data: { id: jobId },
+            dataType: "json",
+            success: function (response) {
+              const job = response[0];
+              $("#jobId").val(job.id);
+              $("#jobPosisi").val(job.posisi);
+              $("#jobPerusahaan").val(job.perusahaan);
+              $("#jobLokasi").val(job.lokasi);
+              $("#jobDeskripsi").val(job.deskripsi);
+              $("#jobGaji").val(job.gaji);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              console.error("Request failed: ", textStatus, errorThrown);
+            },
+          });
+        };
+
+        // Fungsi untuk menghapus lowongan
+        window.deleteJob = function (jobId) {
+          if (confirm("Apakah Anda yakin ingin menghapus lowongan ini?")) {
+            $.ajax({
+              url: script_url,
+              type: "DELETE",
+              data: { id: jobId },
+              dataType: "json",
+              success: function (response) {
+                alert(response.message);
+                loadJobs(); // Muat ulang data setelah dihapus
+              },
+              error: function (jqXHR, textStatus, errorThrown) {
+                console.error("Request failed: ", textStatus, errorThrown);
+              },
+            });
+          }
+        };
+      });
+    </script>
+  </body>
+</html>
