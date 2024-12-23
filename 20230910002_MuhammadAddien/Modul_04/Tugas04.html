@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Alumni UNIKU</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+
+      h1 {
+        color: #fffb00;
+        text-align: center;
+      }
+
+      #search {
+        display: block;
+        margin: 0 auto 20px auto;
+        padding: 10px;
+        width: 100%;
+        max-width: 400px;
+        box-sizing: border-box;
+      }
+
+      .alumni-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .alumni-card {
+        width: 100%;
+        max-width: 600px;
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .alumni-card:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .alumni-photo {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .delete-button,
+      .edit-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 15px;
+        margin-top: 10px;
+        margin-right: 5px;
+        cursor: pointer;
+      }
+
+      .delete-button {
+        background-color: red;
+      }
+
+      .edit-button:hover {
+        background-color: #0056b3;
+      }
+
+      .delete-button:hover {
+        background-color: darkred;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Profil Alumni UNIKU</h1>
+    <input type="text" id="search" placeholder="Cari alumni..." />
+    <div class="alumni-list" id="alumniList">
+      <div
+        class="alumni-card"
+        data-jurusan="Teknik Informatika"
+        data-tahun="2020"
+      >
+        <img src="Image/Raka.jpg" alt="Foto Raka" class="alumni-photo" />
+        <div>
+          <h2>Raka</h2>
+          <p>Jurusan: Teknik Informatika</p>
+          <p>Tahun Kelulusan: 2020</p>
+        </div>
+        <button class="edit-button">Edit</button>
+        <button class="delete-button">Hapus</button>
+      </div>
+      <div
+        class="alumni-card"
+        data-jurusan="Teknik Informatika"
+        data-tahun="2021"
+      >
+        <img src="Image/Rizki.jpg" alt="Foto Rizki" class="alumni-photo" />
+        <div>
+          <h2>Rizki</h2>
+          <p>Jurusan: Teknik Informatika</p>
+          <p>Tahun Kelulusan: 2021</p>
+        </div>
+        <button class="edit-button">Edit</button>
+        <button class="delete-button">Hapus</button>
+      </div>
+      <div
+        class="alumni-card"
+        data-jurusan="Sistem Informasi"
+        data-tahun="2019"
+      >
+        <img src="Image/Fadlan.jpg" alt="Foto Fadlan" class="alumni-photo" />
+        <div>
+          <h2>Fadlan</h2>
+          <p>Jurusan: Sistem Informasi</p>
+          <p>Tahun Kelulusan: 2019</p>
+        </div>
+        <button class="edit-button">Edit</button>
+        <button class="delete-button">Hapus</button>
+      </div>
+      <div
+        class="alumni-card"
+        data-jurusan="Sistem Informasi"
+        data-tahun="2022"
+      >
+        <img src="Image/Fahmi.jpg" alt="Foto Fahmi" class="alumni-photo" />
+        <div>
+          <h2>Fahmi</h2>
+          <p>Jurusan: Sistem Informasi</p>
+          <p>Tahun Kelulusan: 2022</p>
+        </div>
+        <button class="edit-button">Edit</button>
+        <button class="delete-button">Hapus</button>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("search");
+        const alumniList = document.getElementById("alumniList");
+
+        // Fungsi pencarian
+        searchInput.addEventListener("input", function () {
+          const filter = searchInput.value.toLowerCase();
+          const alumniCards = alumniList.getElementsByClassName("alumni-card");
+
+          for (let i = 0; i < alumniCards.length; i++) {
+            const card = alumniCards[i];
+            const name = card
+              .getElementsByTagName("h2")[0]
+              .innerText.toLowerCase();
+            const jurusan = card.dataset.jurusan.toLowerCase();
+            const tahun = card.dataset.tahun.toLowerCase();
+
+            if (
+              name.includes(filter) ||
+              jurusan.includes(filter) ||
+              tahun.includes(filter)
+            ) {
+              card.style.display = "";
+            } else {
+              card.style.display = "none";
+            }
+          }
+        });
+
+        // Fungsi hapus
+        const deleteButtons = document.querySelectorAll(".delete-button");
+        deleteButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const card = this.parentElement;
+            alumniList.removeChild(card);
+          });
+        });
+
+        // Fungsi edit
+        const editButtons = document.querySelectorAll(".edit-button");
+        editButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const card = this.parentElement;
+            const nameElement = card.querySelector("h2");
+            const jurusanElement = card.querySelector("p");
+            const tahunElement = card.querySelectorAll("p")[1];
+
+            const newName = prompt("Edit Nama:", nameElement.innerText);
+            const newJurusan = prompt(
+              "Edit Jurusan:",
+              jurusanElement.innerText.replace("Jurusan: ", "")
+            );
+            const newTahun = prompt(
+              "Edit Tahun Kelulusan:",
+              tahunElement.innerText.replace("Tahun Kelulusan: ", "")
+            );
+
+            if (newName) nameElement.innerText = newName;
+            if (newJurusan) jurusanElement.innerText = `Jurusan: ${newJurusan}`;
+            if (newTahun)
+              tahunElement.innerText = `Tahun Kelulusan: ${newTahun}`;
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
