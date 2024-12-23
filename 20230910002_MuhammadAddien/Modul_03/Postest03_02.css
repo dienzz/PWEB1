@@ -1,0 +1,14 @@
+body {
+  background-color: lightseagreen;
+  font-family: "Franklin Gothic Medium";
+}
+h1 {
+  color: lightgrey;
+  text-align: center;
+  padding: 15px;
+}
+p {
+  color: beige;
+  text-align: justify;
+  font-size: 16px;
+}
