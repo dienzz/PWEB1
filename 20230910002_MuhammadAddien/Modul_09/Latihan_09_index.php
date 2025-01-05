@@ -13,7 +13,7 @@
             margin:0;/*Menghilangkan margin default dari body*/
         }
         .jumbotron-bg{
-            background-image: url('https://fkom.uniku.ac.id/wp-content/uploads/2023/01/Header-Home.jpg');/*URL gambar latang belakang*/
+            background-image: url('Header-Home.jpg');/*URL gambar latang belakang*/
             background-size: cover;
             background-position: center;
             color: white;/*Warna teks jumbotron*/
@@ -39,8 +39,8 @@
                     <?php
                         extract($_GET);
                         if(isset($menu)){
-                            if($menu == "home"){
-                                include "Latihan_09_home.php";
+                            if($menu == "index"){
+                                include "Latihan_09_index.php";
                             } else if($menu == "about"){
                                 include "Latihan_09_about.php";
                             } else if($menu == "alumni"){
@@ -56,7 +56,7 @@
                             } else if($menu == "penelusuran"){
                                 include "Latihan_09_penelusuran.php";
                             } else {
-                                include "Latihan_09_home.php";
+                                // include "Latihan_09_index.php";
                             }
                         }
                     ?>
